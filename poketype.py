@@ -46,26 +46,21 @@ class TypeChart():
         ptype = self.types[index]
         return ptype
 
-    def get_attack(self,ptype):
-        row = self.get_index(ptype)
-        return self.table[row]
-
-    def get_defense(self,ptype):
+    def get_matchup(self,ptype):
         col = self.get_index(ptype)
-        return [row[col] for row in self.table]
+        attack = self.table[col]
+        defense = [row[col] for row in self.table]
+        return (attack,defense)
 
-    def score_attack(self,ptype):
-        attack = self.get_attack(ptype)
-        return sum(attack)
-
-    def score_defense(self,ptype):
-        defense = self.get_defense(ptype)
-        return -sum(defense)
+    def sum_matchup(self,tup):
+        sum0 = sum(tup[0])
+        sum1 = -sum(tup[1])
+        return (sum0,sum1)
 
     def score(self,ptype):
-        attack = self.score_attack(ptype)
-        defense = self.score_defense(ptype)
-        return attack+defense
+        matchup = self.get_matchup(ptype)
+        tot = self.sum_matchup(matchup)
+        return tot[0]+tot[1]
 
 typechart = TypeChart()
 chart = typechart.get_chart()
