@@ -34,12 +34,12 @@ class TypeChart():
 
     # pokemon type to table index
     def get_index(self,ptype):
-        index = self.types.index(ptype)
-        return index
+        ind = self.types.index(ptype)
+        return ind
 
     # table index to pokemon type
-    def get_ptype(self,index):
-        ptype = self.types[index]
+    def get_ptype(self,ind):
+        ptype = self.types[ind]
         return ptype
 
     # row and col of table for pokemon type matchup
