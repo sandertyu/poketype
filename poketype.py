@@ -73,20 +73,17 @@ class TypeChart():
         tierlist = {typelist[i]: scorelist[i] for i in range(NUM)}
         return tierlist
 
-    '''
     def matchup(self,ptype):
         eff = self.get_matchup(ptype)
         a,d = eff[0],eff[1]
-        for x in a:
-            if x != 0:
-                i = a.index(x)
-                attack[i] = self.get_ptype(x)
-        for y in d:
-            if y != 0:
-                i = d.index(y)
-                defense[i] = self.get_ptype(y)
+        for key,val in self.map.items():
+            if a[val] != 0:
+                a[val] = key
+            if d[val] != 0:
+                d[val] = key
+        attack = [x for x in a if x != 0]
+        defense = [y for y in d if y != 0]
         return attack,defense
-        '''
 
 typechart = TypeChart()
 chart = typechart.get_chart()
