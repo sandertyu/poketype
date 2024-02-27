@@ -33,12 +33,6 @@ class TypeChart():
         self.types = TYPES
         self.map = {self.types[i]: i for i in range(NUM)}
 
-    def get_chart(self):
-        return self.table
-
-    def get_types(self):
-        return self.types
-
     def get_index(self,ptype):
         index = self.types.index(ptype)
         return index
@@ -53,18 +47,18 @@ class TypeChart():
         defense = [row[col] for row in self.table]
         return (attack,defense)
 
-    def sum_matchup(self,tup):
+    def get_matchup_sum(self,tup):
         sum0 = sum(tup[0])
         sum1 = -sum(tup[1])
         return (sum0,sum1)
 
     def score(self,ptype):
         eff = self.get_matchup(ptype)
-        tot = self.sum_matchup(eff)
+        tot = self.get_matchup_sum(eff)
         return tot[0]+tot[1]
 
     def tierlist(self):
-        scores = {t: typechart.score(t) for t in typechart.get_types()}
+        scores = {t: self.score(t) for t in self.types}
         scorelist = sorted(scores.values(),reverse=True)
         typelist = sorted(scores.values(),reverse=True)
         for key,val in scores.items():
@@ -74,16 +68,15 @@ class TypeChart():
         return tierlist
 
     def matchup(self,ptype):
-        eff = self.get_matchup(ptype)
-        a,d = eff[0],eff[1]
+        row,col = self.get_matchup(ptype)
         for key,val in self.map.items():
-            if a[val] != 0:
-                a[val] = key
-            if d[val] != 0:
-                d[val] = key
-        attack = [x for x in a if x != 0]
-        defense = [y for y in d if y != 0]
+            if row[val] != 0:
+                row[val] = key
+            if col[val] != 0:
+                col[val] = key
+        attack = [x for x in row if x != 0]
+        defense = [y for y in col if y != 0]
         return attack,defense
 
 typechart = TypeChart()
-chart = typechart.get_chart()
+chart = typechart.table
