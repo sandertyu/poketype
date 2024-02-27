@@ -49,14 +49,14 @@ class TypeChart():
         col = [x[ind] for x in self.table]
         return (row,col)
 
-    # row and column sum balance of pokemon type
+    # attack and defense sum balance of pokemon type effectiveness
     def get_balance(self,tup):
-        sum0 = sum(tup[0])
-        sum1 = -sum(tup[1])
-        return (sum0,sum1)
+        balance0 = sum(tup[0])
+        balance1 = -sum(tup[1])
+        return (balance0,balance1)
 
-    # pokemon types by sorted matchup and balance
-    def tierlist(self):
+    # pokemon type tiers by sorted balance and score
+    def get_tiers(self):
         # {ptype:(balance)}
         balances = {t: self.get_balance(self.get_matchup(t))
                 for t in self.types}
@@ -72,10 +72,10 @@ class TypeChart():
             ind = ptypelist.index(val)
             ptypelist[ind] = key
         # sorted list of balance
-        sumlist = [balances.get(t) for t in ptypelist]
+        balancelist = [balances.get(t) for t in ptypelist]
         # sorted {ptype:(balance,score)}
-        tier = {ptypelist[i]: (*sumlist[i],scorelist[i]) for i in range(NUM)}
-        return tier
+        tiers = {ptypelist[i]: (*balancelist[i],scorelist[i]) for i in range(NUM)}
+        return tiers
 
     # prettier get_matchup
     def matchup(self,ptype):
@@ -103,4 +103,11 @@ class TypeChart():
                 defsup.append(key)
         return attsup,attres,defres,defsup
 
+    # dict of pokemon type and pretty matchup
+    def tree_matchup(self):
+        plant = {t.upper(): self.matchup(t) for t in self.types}
+        return plant
+
 chart = TypeChart()
+tierlist = chart.get_tiers()
+tree = chart.tree_matchup()
