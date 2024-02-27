@@ -82,16 +82,25 @@ class TypeChart():
         row,col = self.get_matchup(ptype)
         # {ptype:index}
         ptypeindex = {i: self.get_index(i) for i in self.types}
-        # replace non-zero row,col with ptype
+        # attack type super eff and res, defense type res and super eff
+        attsup = []
+        attres = []
+        defres = []
+        defsup = []
+        # sort attack/defense super eff/res into lists
         for key,val in ptypeindex.items():
-            if row[val] != 0:
-                row[val] = key
-            if col[val] != 0:
-                col[val] = key
-        # remove non-zeros from ptype row,col
-        attack = [x for x in row if x != 0]
-        defense = [y for y in col if y != 0]
-        return attack,defense
+            if row[val] == 0:
+                pass
+            elif row[val] > 0:
+                attsup.append(key)
+            else:
+                attres.append(key)
+            if col[val] == 0:
+                pass
+            elif col[val] < 0:
+                defres.append(key)
+            else:
+                defsup.append(key)
+        return attsup,attres,defres,defsup
 
-typechart = TypeChart()
-chart = typechart.table
+chart = TypeChart()
