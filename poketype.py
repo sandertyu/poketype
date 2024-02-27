@@ -42,36 +42,37 @@ class TypeChart():
         ptype = self.types[index]
         return ptype
 
-    # row and col of table
+    # row and col of table for pokemon type matchup
     def get_matchup(self,ptype):
-        col = self.get_index(ptype)
-        attack = self.table[col]
-        defense = [row[col] for row in self.table]
-        return (attack,defense)
+        ind = self.get_index(ptype)
+        row = self.table[ind]
+        col = [x[ind] for x in self.table]
+        return (row,col)
 
-    # sums of table row and col matchup
+    # row and column sum balance of pokemon type
     def get_balance(self,tup):
         sum0 = sum(tup[0])
         sum1 = -sum(tup[1])
         return (sum0,sum1)
 
-    # ptypes by ranked balance and matchup
+    # pokemon types by sorted matchup and balance
     def tierlist(self):
         # {ptype:(balance)}
-        sums = {t: self.get_balance(self.get_matchup(t))
+        balances = {t: self.get_balance(self.get_matchup(t))
                 for t in self.types}
         # {ptype:score}
-        scores = {t: sums[t][0]+sums[t][1] for t in self.types}
+        scores = {t: balances[t][0]+balances[t][1] for t in self.types}
         # sort scores values for later
         scorelist = sorted(scores.values(),reverse=True)
         # scorelist to be replaced with ptypes
         ptypelist = sorted(scores.values(),reverse=True)
         # replace ptypelist scores with ptype
         for key,val in scores.items():
-            index = ptypelist.index(val)
-            ptypelist[index] = key
+            # index of ptypelist score
+            ind = ptypelist.index(val)
+            ptypelist[ind] = key
         # sorted list of balance
-        sumlist = [sums.get(t) for t in ptypelist]
+        sumlist = [balances.get(t) for t in ptypelist]
         # sorted {ptype:(balance,score)}
         tier = {ptypelist[i]: (*sumlist[i],scorelist[i]) for i in range(NUM)}
         return tier
