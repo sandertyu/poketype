@@ -20,6 +20,26 @@ TABLE = [
     [0,-1,-1,-1,0,1,0,0,0,0,0,0,1,0,0,0,-1],
     ]
 
+TABLE2 = [
+    [1,1,1,1,1,1,1,1,1,1,1,1,.5,0,1,1,.5],
+    [1,.5,.5,1,2,2,1,1,1,1,1,2,.5,1,.5,1,2],
+    [1,2,.5,1,.5,1,1,1,2,1,1,1,2,1,.5,1,1],
+    [1,1,2,.5,.5,1,1,1,0,2,1,1,1,1,.5,1,1],
+    [1,.5,2,1,.5,1,1,.5,2,.5,1,.5,2,1,.5,1,.5],
+    [1,.5,.5,1,2,.5,1,1,2,2,1,1,1,1,2,1,.5],
+    [2,1,1,1,1,2,1,.5,1,.5,.5,.5,2,0,1,2,2],
+    [1,1,1,1,2,1,1,.5,.5,1,1,1,.5,.5,1,1,0],
+    [1,2,1,2,.5,1,1,2,1,0,1,.5,2,1,1,1,2],
+    [1,1,1,.5,2,1,2,1,1,1,1,2,.5,1,1,1,.5],
+    [1,1,1,1,1,1,2,2,1,1,.5,1,1,1,1,0,.5],
+    [1,.5,1,1,2,1,.5,.5,1,.5,2,1,1,.5,1,2,.5],
+    [1,2,1,1,1,2,.5,1,.5,2,1,2,1,1,1,1,.5],
+    [0,1,1,1,1,1,1,1,1,1,2,1,1,2,1,.5,.5],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,.5],
+    [1,1,1,1,1,1,.5,1,1,1,2,1,1,2,1,.5,.5],
+    [1,.5,.5,.5,1,2,1,1,1,1,1,1,2,1,1,1,.5],
+    ]
+
 TYPES = [
     "normal","fire","water","electric","grass","ice","fighting",
     "poison","ground","flying","psychic","bug","rock","ghost",
@@ -45,7 +65,7 @@ class TypeChart():
         return ptype
 
     # row and col of table for pokemon type matchup
-    def get_matchup(self,ptype):
+    def get_matchup_raw(self,ptype):
         ind = self.get_index(ptype)
         row = self.table[ind]
         col = [x[ind] for x in self.table]
@@ -60,7 +80,7 @@ class TypeChart():
     # pokemon type tiers by sorted balance and score
     def get_tiers(self):
         # {ptype:(balance)}
-        balances = {t: self.get_balance(self.get_matchup(t))
+        balances = {t: self.get_balance(self.get_matchup_raw(t))
                 for t in self.types}
         # {ptype:score}
         scores = {t: balances[t][0]+balances[t][1] for t in self.types}
@@ -79,16 +99,13 @@ class TypeChart():
         tiers = {ptypelist[i]: (*balancelist[i],scorelist[i]) for i in range(NUM)}
         return tiers
 
-    # prettier get_matchup
+    # prettier get_matchup_raw
     def matchup(self,ptype):
-        row,col = self.get_matchup(ptype)
+        row,col = self.get_matchup_raw(ptype)
         # {ptype:index}
         ptypeindex = {i: self.get_index(i) for i in self.types}
         # attack type super eff and res, defense type res and super eff
-        attsup = []
-        attres = []
-        defres = []
-        defsup = []
+        attsup,attres,defres,defsup = [],[],[],[]
         # sort attack/defense super eff/res into lists
         for key,val in ptypeindex.items():
             if row[val] == 0:
