@@ -1,6 +1,14 @@
-Pokemon type effectiveness chart and calculator
+# Pokemon Type Effectiveness Table and Matchup Calculator
 
-WIP
+## Wishlist
+
+- gen 1, 2-5, 6+
+- dual type calc
+- docstrings
+- readme
+- web app page
+
+## WIP Thoughts
 
 - dict comprehension init ptypes with index values, ptype or index as key?
 - methods to pull ptype keys and values
@@ -10,12 +18,3 @@ WIP
 - what does it mean to sum the +- 0,1,2 vs divide by 17
 - always pass score with att/def tuple
 - use enumerate
-
-Wishlist
-
-- [DONE] alt style table with 0, .5, 1, 2
-- docstrings
-- readme
-- web app page
-- gen 1, 2-5, 6+, both table styles
-- dual type calc

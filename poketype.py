@@ -31,7 +31,7 @@ class TypeChart():
     def __init__(self):
         self.table = TABLE
         self.types = TYPES
-        self.num_types = len(self.types)
+        self.num = len(self.types)
 
         # {ptype:index}
         self.ptypeindex = {t: self.get_index(t) for t in self.types}
@@ -124,16 +124,6 @@ class TypeChart():
                 pass
         return def_imun
 
-    # type effectiveness sorted by 2x, 0.5x, 0x matchup
-    def get_matchup(self,ptype):
-        att_doub = self.get_attack_double(ptype)
-        att_half = self.get_attack_half(ptype)
-        att_imun = self.get_attack_immune(ptype)
-        def_doub = self.get_defense_double(ptype)
-        def_half = self.get_defense_half(ptype)
-        def_imun = self.get_defense_immune(ptype)
-        return att_doub, att_half, att_imun, def_doub, def_half, def_imun
-
     # sum number of each attack/defense and positive/negative matchup
     # (attack positive, attack negative, defense positive, defense negative)
     def get_matchup_sums(self,ptype):
@@ -153,12 +143,12 @@ class TypeChart():
 
     # pretty display type matchup effectiveness, sums and scores
     def get_matchup_summary(self,ptype):
-        summary = {'Attack Double': self.get_matchup(ptype)[0],
-                   'Attack Half': self.get_matchup(ptype)[1],
-                   'Attack Immune': self.get_matchup(ptype)[2],
-                   'Defense Weak': self.get_matchup(ptype)[3],
-                   'Defense Resist': self.get_matchup(ptype)[4],
-                   'Defense Immune': self.get_matchup(ptype)[5],
+        summary = {'Attack Double': self.get_attack_double(ptype),
+                   'Attack Half': self.get_attack_half(ptype),
+                   'Attack Immune': self.get_attack_immune(ptype),
+                   'Defense Weak': self.get_defense_double(ptype),
+                   'Defense Resist': self.get_defense_half(ptype),
+                   'Defense Immune': self.get_defense_immune(ptype),
                    'Matchup Sums': self.get_matchup_sums(ptype),
                    'Matchup Scores': self.get_matchup_scores(ptype),}
         return summary
@@ -202,7 +192,7 @@ def format_tierlist(sums):
     sumlist = [sums.get(t) for t in ptypelist]
     # sorted {ptype:(*sum,score)}
     tiers = {ptypelist[i]: (*sumlist[i],scorelist[i])
-             for i in range(chart.num_types)}
+             for i in range(chart.num)}
     return tiers
 
 # pokemon type tiers by sum number of positive vs negative matchups
