@@ -77,7 +77,7 @@ class TypeChart():
     def get_matchup(self,ptype):
         row,col = self.get_multipliers(ptype)
         # {ptype:index}
-        ptypeindex = {i: self.get_index(i) for i in self.types}
+        ptypeindex = {t: self.get_index(t) for t in self.types}
         # attack type super eff and res, defense type res and super eff
         attpos,attneg,defpos,defneg = [],[],[],[]
         # sort attack/defense super eff/res into lists
@@ -115,15 +115,15 @@ class TypeChart():
     def get_matchup_summary(self,ptype):
         summary = {'Attack Positive': self.get_matchup(ptype)[0],
                    'Attack Negative': self.get_matchup(ptype)[1],
-                   'Defend Positive': self.get_matchup(ptype)[2],
-                   'Defend Negative': self.get_matchup(ptype)[3],
+                   'Defense Positive': self.get_matchup(ptype)[2],
+                   'Defense Negative': self.get_matchup(ptype)[3],
                    'Sums': self.get_matchup_sums(ptype),
                    'Scores': self.get_matchup_scores(ptype),}
         return summary
 
 chart = TypeChart()
-matchup_tree = {t: chart.get_matchup_summary(t) for t in chart.types}
 
+matchup_tree = {t: chart.get_matchup_summary(t) for t in chart.types}
 normal_summary = matchup_tree['normal']
 fire_summary = matchup_tree['fire']
 water_summary = matchup_tree['water']
@@ -160,41 +160,22 @@ def format_tierlist(balances,scores):
     tiers = {ptypelist[i]: (*balancelist[i],scorelist[i]) for i in range(NUM)}
     return tiers
 
-# attack and defense sum balance of pokemon type effectiveness
-def get_balance(tup):
-    balance0 = sum(tup[0])
-    balance1 = -sum(tup[1])
-    return (balance0,balance1)
-
-# pokemon type tiers by sorted balance and score
+# pokemon type tiers by sorted multiplier sum balance and score
 def get_tierlist():
+    mult = [chart.get_multipliers(t) for t in chart.types]
+    mult_sums = [(sum(m[0]),-sum(m[1])) for m in mult]
     # {ptype:(balance)}
-    balances = {t: get_balance(chart.get_multipliers(t))
-            for t in chart.types}
+    balances = {t: mult_sums[chart.get_index(t)] for t in chart.types}
     # {ptype:score}
     scores = {t: sum(balances[t]) for t in chart.types}
     tiers = format_tierlist(balances,scores)
     return tiers
 
-# dict of pokemon type and pretty matchup
-def tree_matchup():
-    plant = {t.upper(): chart.get_matchup(t) for t in chart.types}
-    return plant
-
 # sum number of positive matchups vs negative matchups
 # treat immunities same as resist
 def get_simple_tierlist():
-    attpos = [sup[0] for sup in tree_matchup().values()]
-    attneg = [res[1] for res in tree_matchup().values()]
-    defpos = [res[2] for res in tree_matchup().values()]
-    defneg = [sup[3] for sup in tree_matchup().values()]
-    balances = {}
-    for t in chart.types:
-        ind = chart.get_index(t)
-        balances[t] = (len(
-            attpos[ind]),-len(attneg[ind]),len(defpos[ind]),-len(defneg[ind]))
-    scores = {t: sum(balances[t])
-              for t in chart.types}
+    balances = {t: chart.get_matchup_sums(t) for t in chart.types}
+    scores = {t: sum(balances[t]) for t in chart.types}
     tiers = format_tierlist(balances,scores)
     return tiers
 
