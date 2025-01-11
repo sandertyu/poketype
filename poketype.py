@@ -34,7 +34,7 @@ class TypeChart:
         self.num = len(self.types)
 
         # {type:index}
-        self.type_index = {t: c for c,t in enumerate(self.types)}
+        self.type_index = {t: i for i,t in enumerate(self.types)}
 
     # pokemon type to table index
     def get_index(self,ptype):
@@ -52,7 +52,7 @@ class TypeChart:
         row = self.table[ind]
         return row
 
-    # col of type effectiveness multiplier table
+    # column of type effectiveness multiplier table
     def get_defense(self,ptype):
         ind = self.get_index(ptype)
         col = [x[ind] for x in self.table]
@@ -124,7 +124,7 @@ class TypeChart:
                 pass
         return def_imun
 
-    # sum number of each attack/defense and positive/negative matchup
+    # sum number of each attack/defense positive/negative matchup
     # (attack positive, attack negative, defense positive, defense negative)
     def get_matchup_sums(self,ptype):
         att_pos = self.get_attack_double(ptype)
@@ -196,16 +196,17 @@ def format_tierlist(sums):
     return tiers
 
 # pokemon type tiers by sum number of positive vs negative matchups
-# treat immunities same as resist, binary good/bad
+# treat immunities same as resist, binary ignore neutral
 def get_tierlist_binary():
-    sums = {t: chart.get_matchup_sums(t) for t in chart.types}
+    sums = {t: chart.get_matchup_scores(t)[:-1] for t in chart.types}
     tiers = format_tierlist(sums)
     return tiers
 
-# pokemon type tiers by sum of effectiveness multipliers
+# pokemon type tiers by net sum of effectiveness multipliers
+# subtract chart.num from sum and make defense negative to center about 0
 def get_tierlist_effective():
     mult  = [(chart.get_attack(t),chart.get_defense(t)) for t in chart.types]
-    mult_sums = [(sum(m[0]),-sum(m[1])) for m in mult]
+    mult_sums = [(sum(m[0])-chart.num,-(sum(m[1])-chart.num)) for m in mult]
     # {ptype:(*sum)}
     sums = {t: mult_sums[chart.get_index(t)] for t in chart.types}
     # {ptype:score}
