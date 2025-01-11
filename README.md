@@ -13,7 +13,7 @@ WIP
 
 Wishlist
 
-- alt style table with 0, .5, 1, 2
+- [DONE] alt style table with 0, .5, 1, 2
 - docstrings
 - readme
 - web app page
