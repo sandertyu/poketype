@@ -26,23 +26,23 @@ TYPES = [
     'dragon','dark','steel',
     ]
 
-class TypeChart():
+class TypeChart:
 
     def __init__(self):
         self.table = TABLE
         self.types = TYPES
         self.num = len(self.types)
 
-        # {ptype:index}
-        self.ptypeindex = {t: self.get_index(t) for t in self.types}
+        # {type:index}
+        self.type_index = {t: c for c,t in enumerate(self.types)}
 
     # pokemon type to table index
     def get_index(self,ptype):
-        ind = self.types.index(ptype)
+        ind = self.type_index[ptype]
         return ind
 
     # table index to pokemon type
-    def get_ptype(self,ind):
+    def get_type(self,ind):
         ptype = self.types[ind]
         return ptype
 
@@ -62,7 +62,7 @@ class TypeChart():
     def get_attack_double(self,ptype):
         row = self.get_attack(ptype)
         att_doub = []
-        for key,val in self.ptypeindex.items():
+        for key,val in self.type_index.items():
             if row[val] == 2:
                 att_doub.append(key)
             else:
@@ -73,7 +73,7 @@ class TypeChart():
     def get_attack_half(self,ptype):
         row = self.get_attack(ptype)
         att_half = []
-        for key,val in self.ptypeindex.items():
+        for key,val in self.type_index.items():
             if row[val] == .5:
                 att_half.append(key)
             else:
@@ -84,7 +84,7 @@ class TypeChart():
     def get_attack_immune(self,ptype):
         row = self.get_attack(ptype)
         att_imun = []
-        for key,val in self.ptypeindex.items():
+        for key,val in self.type_index.items():
             if row[val] == 0:
                 att_imun.append(key)
             else:
@@ -95,7 +95,7 @@ class TypeChart():
     def get_defense_double(self,ptype):
         col = self.get_defense(ptype)
         def_doub = []
-        for key,val in self.ptypeindex.items():
+        for key,val in self.type_index.items():
             if col[val] == 2:
                 def_doub.append(key)
             else:
@@ -106,7 +106,7 @@ class TypeChart():
     def get_defense_half(self,ptype):
         col = self.get_defense(ptype)
         def_half = []
-        for key,val in self.ptypeindex.items():
+        for key,val in self.type_index.items():
             if col[val] == .5:
                 def_half.append(key)
             else:
@@ -117,7 +117,7 @@ class TypeChart():
     def get_defense_immune(self,ptype):
         col = self.get_defense(ptype)
         def_imun = []
-        for key,val in self.ptypeindex.items():
+        for key,val in self.type_index.items():
             if col[val] == 0:
                 def_imun.append(key)
             else:
