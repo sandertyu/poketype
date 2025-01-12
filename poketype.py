@@ -174,32 +174,32 @@ dragon_summary = matchup_tree['dragon']
 dark_summary = matchup_tree['dark']
 steel_summary = matchup_tree['steel']
 
-# format tierlist {ptype:(*sum,score)}
-# sums = {ptype:(*sum)}
-def format_tierlist(sums):
-    # {ptype:score}
-    scores = {t: sum(sums[t]) for t in chart.types}
+# type tierlist grouped by score [{score:(ptypes)}]
+def format_tierlist(scores):
     # sort scores values for later
     scorelist = sorted(scores.values(),reverse=True)
-    # scorelist to be replaced with ptypes
-    ptypelist = sorted(scores.values(),reverse=True)
-    # replace ptypelist scores with ptype
+    # sorted scorelist to [score,ptype]
     for key,val in scores.items():
-        # index of ptypelist score
-        ind = ptypelist.index(val)
-        ptypelist[ind] = key
-    # sorted list of sums
-    sumlist = [sums.get(t) for t in ptypelist]
-    # sorted {ptype:(*sum,score)}
-    tiers = {ptypelist[i]: (*sumlist[i],scorelist[i])
-             for i in range(chart.num)}
-    return tiers
+        ind = scorelist.index(val)
+        scorelist[ind] = [val, key]
+    compare = [(scorelist[i],scorelist[i+1]) for i in range(chart.num-1)]
+    for pair in compare:
+        try:
+            ind = scorelist.index(pair[0])
+        except ValueError:
+            pass
+        if pair[0][0] == pair[1][0]:
+            scorelist[ind].append(pair[1][1])
+            scorelist.pop(ind+1)
+    tierlist = [{tier[0]: tuple(tier[1:])} for tier in scorelist]
+    return tierlist
 
 # pokemon type tiers by sum number of positive vs negative matchups
 # treat immunities same as resist, binary ignore neutral
 def get_tierlist_binary():
-    sums = {t: chart.get_matchup_scores(t)[:-1] for t in chart.types}
-    tiers = format_tierlist(sums)
+    # {ptype:score}
+    scores = {t: chart.get_matchup_scores(t)[2] for t in chart.types}
+    tiers = format_tierlist(scores)
     return tiers
 
 # pokemon type tiers by net sum of effectiveness multipliers
@@ -209,8 +209,9 @@ def get_tierlist_effective():
     mult_sums = [(sum(m[0])-chart.num,-(sum(m[1])-chart.num)) for m in mult]
     # {ptype:(*sum)}
     sums = {t: mult_sums[chart.get_index(t)] for t in chart.types}
+    scores = {t: sum(sums[t]) for t in chart.types}
     # {ptype:score}
-    tiers = format_tierlist(sums)
+    tiers = format_tierlist(scores)
     return tiers
 
 tierlist_binary = get_tierlist_binary()
