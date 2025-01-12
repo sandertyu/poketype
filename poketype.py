@@ -61,67 +61,37 @@ class TypeChart:
     # attacking type 2x effective coverage
     def get_attack_double(self,ptype):
         row = self.get_attack(ptype)
-        att_doub = []
-        for key,val in self.type_index.items():
-            if row[val] == 2:
-                att_doub.append(key)
-            else:
-                pass
+        att_doub = [key for key,val in self.type_index.items() if row[val] == 2]
         return att_doub
 
     # attacking type 0.5x effective coverage
     def get_attack_half(self,ptype):
         row = self.get_attack(ptype)
-        att_half = []
-        for key,val in self.type_index.items():
-            if row[val] == .5:
-                att_half.append(key)
-            else:
-                pass
+        att_half = [key for key,val in self.type_index.items() if row[val] == .5]
         return att_half
 
     # attacking type 0x effective coverage
     def get_attack_immune(self,ptype):
         row = self.get_attack(ptype)
-        att_imun = []
-        for key,val in self.type_index.items():
-            if row[val] == 0:
-                att_imun.append(key)
-            else:
-                pass
+        att_imun = [key for key,val in self.type_index.items() if row[val] == 0]
         return att_imun
 
     # defending type 2x effective weakness
     def get_defense_double(self,ptype):
         col = self.get_defense(ptype)
-        def_doub = []
-        for key,val in self.type_index.items():
-            if col[val] == 2:
-                def_doub.append(key)
-            else:
-                pass
+        def_doub = [key for key,val in self.type_index.items() if col[val] == 2]
         return def_doub
 
     # defending type 0.5x effective resistance
     def get_defense_half(self,ptype):
         col = self.get_defense(ptype)
-        def_half = []
-        for key,val in self.type_index.items():
-            if col[val] == .5:
-                def_half.append(key)
-            else:
-                pass
+        def_half = [key for key,val in self.type_index.items() if col[val] == .5]
         return def_half
 
     # defending type 0x effective immunity
     def get_defense_immune(self,ptype):
         col = self.get_defense(ptype)
-        def_imun = []
-        for key,val in self.type_index.items():
-            if col[val] == 0:
-                def_imun.append(key)
-            else:
-                pass
+        def_imun = [key for key,val in self.type_index.items() if col[val] == 0]
         return def_imun
 
     # sum number of each attack/defense positive/negative matchup
